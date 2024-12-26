@@ -21,6 +21,19 @@ from mani_skill.utils.wrappers.flatten import FlattenActionSpaceWrapper
 from mani_skill.utils.wrappers.record import RecordEpisode
 from mani_skill.vector.wrappers.gymnasium import ManiSkillVectorEnv
 
+class ExponentialSchedule:
+  """Exponential learning rate schedule for Langevin sampler."""
+
+  def __init__(self, init, decay):
+    self._decay = decay
+    self._latest_lr = init
+
+  def get_rate(self, index):
+    """Get learning rate. Assumes calling sequentially."""
+    del index
+    self._latest_lr *= self._decay
+    return self._latest_lr
+
 class PolynomialSchedule:
   """Polynomial learning rate schedule for Langevin sampler."""
 
@@ -165,31 +178,31 @@ class Agent(nn.Module):
         self.temperature = nn.Parameter(torch.ones(1) * 1.0)
 
     def normalize_actions(self, actions, device):
-        """Normalize actions to [-1, 1] range"""
+        """Normalize actions to [-1, 1] range✅"""
         action_space_range = (self.action_high - self.action_low).to(device)
         action_space_mid = (self.action_high + self.action_low).to(device) / 2.0
         return 2.0 * (actions - action_space_mid) / action_space_range
 
     def denormalize_actions(self, normalized_actions, device):
-        """Denormalize actions from [-1, 1] to original range"""
+        """Denormalize actions from [-1, 1] to original range✅"""
         action_space_range = (self.action_high - self.action_low).to(device)
         action_space_mid = (self.action_high + self.action_low).to(device) / 2.0
         return normalized_actions * action_space_range / 2.0 + action_space_mid
 
     def compute_energy(self, states, actions):
-        """Compute energy value E(s,a)"""
+        """Compute energy value E(s,a)✅"""
         x = torch.cat([states, actions], dim=-1)
         return self.energy_net(x)
 
-    def grad_wrt_actions(self, states, actions, create_graph=False):
-        """Compute gradient of energy with respect to actions"""
-        # actions.requires_grad = True
+    def grad_wrt_actions(self, states, actions, create_graph: bool=False):
+        """Compute gradient of energy with respect to actions🤓"""
+        actions.requires_grad = True
         energies = self.compute_energy(states, actions)
         grad = torch.autograd.grad(energies.sum(), actions, create_graph=create_graph)[0]
         return grad, energies
 
-    def langevin_step(self, states, actions, noise_scale, grad_clip=None, stepsize=0.1):
-        """Single step of Langevin dynamics"""
+    def langevin_step(self, states, actions, noise_scale, grad_clip=None, stepsize=0.1,l_lambda=1.0):
+        """Single step of Langevin dynamics🤓"""
         grad, energy = self.grad_wrt_actions(states, actions)
         
         grad_norm = torch.norm(grad, dim=-1, keepdim=True)
@@ -199,6 +212,7 @@ class Agent(nn.Module):
         # Langevin dynamics update
         noise = torch.randn_like(actions) * noise_scale
         action_drift = stepsize * (0.5 * grad + noise)
+        action_drift=l_lambda*action_drift
         
         actions = actions - action_drift
         actions = torch.clamp(actions, 
@@ -207,8 +221,8 @@ class Agent(nn.Module):
         
         return actions, energy, grad_norm
 
-    def langevin_dynamics(self, states, n_steps=10, step_size=0.1, noise_scale=0.1, grad_clip=1.0):
-        """Langevin dynamics sampling for action selection"""
+    def langevin_mcmc_sa(self, states, n_steps=10, step_size=0.1, noise_scale=0.1, grad_clip=1.0):
+        """Langevin dynamics sampling for action selection🤓"""
         device = states.device
         batch_size = states.shape[0]
         
@@ -229,7 +243,7 @@ class Agent(nn.Module):
                 grad_clip=grad_clip,
                 stepsize=curr_stepsize
             )
-            
+            actions=actions.detach()
         return actions
 
     def get_action_and_value(self, states, actions=None):
