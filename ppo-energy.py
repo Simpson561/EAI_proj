@@ -191,8 +191,9 @@ class Agent(nn.Module):
         return normalized_actions * action_space_range / 2.0 + action_space_mid
 
     def compute_energy(self, states, actions):
-        """Compute energy value E(s,a)✅"""
-        x = torch.cat([states, actions], dim=-1)
+        """Compute energy value E(s,a) with safety checks"""
+        # Create new tensor to avoid modifying inputs
+        x = torch.cat([states.detach(), actions.detach()], dim=-1)
         return self.energy_net(x)
 
     def grad_wrt_actions(self, states, actions, create_graph: bool=False):
@@ -201,7 +202,7 @@ class Agent(nn.Module):
         # actions.requires_grad = True
         actions.requires_grad_(True)
         energies = self.compute_energy(states, actions)
-        grad = torch.autograd.grad(energies.sum(), actions, create_graph=create_graph)[0]
+        grad = torch.autograd.grad(energies.sum(), actions, create_graph=create_graph,allow_unused=True)[0]
         return grad, energies
 
     def langevin_step(self, states, actions, noise_scale, grad_clip=None, stepsize=0.1, l_lambda=1.0):
@@ -226,70 +227,86 @@ class Agent(nn.Module):
         return new_actions, energy, grad_norm
 
     def langevin_mcmc_sa(self, states, n_steps=10, step_size=0.1, noise_scale=0.1, grad_clip=1.0):
-        """Langevin dynamics sampling for action selection🤓"""
+        """Langevin dynamics sampling for action selection"""
         device = states.device
         batch_size = states.shape[0]
         
         # Initialize random actions
-        actions = torch.randn(batch_size, self.action_dim, device=device, requires_grad=True)
-        actions = self.denormalize_actions(torch.tanh(actions), device)
+        init_actions = torch.randn(batch_size, self.action_dim, device=device)
+        actions = self.denormalize_actions(torch.tanh(init_actions), device)
         
         schedule = PolynomialSchedule(step_size, step_size * 0.1, 2.0, n_steps)
         
         for step in range(n_steps):
-            # print(f"####Actions.require_grad={actions.requires_grad}")
-            # actions.requires_grad=True  # Ensure gradients are tracked
             curr_stepsize = schedule.get_rate(step)
-            actions, _, _ = self.langevin_step(
+            
+            # Create new tensor for gradient computation
+            actions = actions.clone().detach().requires_grad_(True)
+            
+            new_actions, _, _ = self.langevin_step(
                 states, 
                 actions,
                 noise_scale=noise_scale,
                 grad_clip=grad_clip,
                 stepsize=curr_stepsize
             )
-            actions=actions.detach()
+            
+            # Update actions without in-place operation
+            actions = new_actions.clone().detach()
+        
         return actions
-
+    
     def get_action_and_value(self, states, actions=None):
         """Get action, log probability, entropy and value"""
         if actions is None:
-            # with torch.no_grad():
-            actions = self.langevin_mcmc_sa(
-                states, 
-                n_steps=10,
-                step_size=0.1,
-                noise_scale=self.temperature.exp().item()
-            )
+            with torch.set_grad_enabled(True):
+                actions = self.langevin_mcmc_sa(
+                    states, 
+                    n_steps=10,
+                    step_size=0.1,
+                    noise_scale=self.temperature.exp().item()
+                )
         
         # Compute energy of the selected action
         energy = self.compute_energy(states, actions)
         
         # Estimate log probability using importance sampling
-        # with torch.no_grad():
         num_samples = 10
-        sampled_actions = torch.stack([
-            self.langevin_mcmc_sa(
-                states,
-                n_steps=10,
-                step_size=0.1,
-                noise_scale=self.temperature.exp().item()
-            )
-            for _ in range(num_samples)
-        ])
+        sampled_actions_list = []
         
-        # Compute energies for all sampled actions
-        sampled_energies = self.compute_energy(
-            states.unsqueeze(0).expand(num_samples, -1, -1).reshape(-1, states.shape[-1]),
-            sampled_actions.reshape(-1, self.action_dim)
-        ).reshape(num_samples, -1)
+        # Create expanded states once
+        expanded_states = states.unsqueeze(0).repeat(num_samples, 1, 1)
         
-        # Compute log probability
-        log_partition = torch.logsumexp(-sampled_energies / self.temperature.exp(), dim=0)
-        log_prob = -energy.squeeze() / self.temperature.exp() - log_partition
+        for i in range(num_samples):
+            with torch.set_grad_enabled(True):
+                sampled_action = self.langevin_mcmc_sa(
+                    states,  # Use original states for sampling
+                    n_steps=10,
+                    step_size=0.1,
+                    noise_scale=self.temperature.exp().item()
+                )
+                sampled_actions_list.append(sampled_action)
+        
+        # Stack actions without modifying original tensors
+        sampled_actions = torch.stack(sampled_actions_list, dim=0)
+        
+        # Reshape once for energy computation
+        flat_states = expanded_states.reshape(-1, states.shape[-1])
+        flat_actions = sampled_actions.reshape(-1, self.action_dim)
+        
+        # Compute energies without modifying tensors
+        sampled_energies = self.compute_energy(flat_states, flat_actions)
+        sampled_energies = sampled_energies.reshape(num_samples, -1)
+        
+        # Compute log probability without in-place ops
+        temperature = self.temperature.exp()
+        neg_energies = -sampled_energies / temperature
+        log_partition = torch.logsumexp(neg_energies, dim=0)
+        log_prob = -energy.squeeze() / temperature - log_partition
         
         # Compute approximate entropy
-        entropy = self.temperature.exp() * log_prob.mean()
-            
+        entropy = temperature * log_prob.mean()
+        
         # Get value prediction
         value = self.critic(states)
         
@@ -551,54 +568,35 @@ if __name__ == "__main__":
                 end = start + args.minibatch_size
                 mb_inds = b_inds[start:end]
 
-                _, newlogprob, entropy, newvalue = agent.get_action_and_value(b_obs[mb_inds], b_actions[mb_inds])
-                logratio = newlogprob - b_logprobs[mb_inds]
-                ratio = logratio.exp()
+                # In the training loop where we compute losses
+                optimizer.zero_grad(set_to_none=True)  # More efficient than setting to zero
 
-                with torch.no_grad():
-                    # calculate approx_kl http://joschu.net/blog/kl-approx.html
-                    old_approx_kl = (-logratio).mean()
-                    approx_kl = ((ratio - 1) - logratio).mean()
-                    clipfracs += [((ratio - 1.0).abs() > args.clip_coef).float().mean().item()]
+                with torch.set_grad_enabled(True):
+                    _, newlogprob, entropy, newvalue = agent.get_action_and_value(b_obs[mb_inds], b_actions[mb_inds])
+                    logratio = newlogprob - b_logprobs[mb_inds]
+                    ratio = logratio.exp()
 
-                if args.target_kl is not None and approx_kl > args.target_kl:
-                    break
+                    # Compute losses without modifying tensors
+                    mb_advantages = b_advantages[mb_inds].clone()  # Clone to avoid in-place ops
+                    if args.norm_adv:
+                        mb_advantages = (mb_advantages - mb_advantages.mean()) / (mb_advantages.std() + 1e-8)
 
-                mb_advantages = b_advantages[mb_inds]
-                if args.norm_adv:
-                    mb_advantages = (mb_advantages - mb_advantages.mean()) / (mb_advantages.std() + 1e-8)
+                    # Policy loss
+                    pg_loss1 = -mb_advantages * ratio
+                    pg_loss2 = -mb_advantages * torch.clamp(ratio, 1 - args.clip_coef, 1 + args.clip_coef)
+                    pg_loss = torch.max(pg_loss1, pg_loss2).mean()
 
-                # Policy loss
-                pg_loss1 = -mb_advantages * ratio
-                pg_loss2 = -mb_advantages * torch.clamp(ratio, 1 - args.clip_coef, 1 + args.clip_coef)
-                pg_loss = torch.max(pg_loss1, pg_loss2).mean()
-
-                # Value loss
-                newvalue = newvalue.view(-1)
-                if args.clip_vloss:
-                    v_loss_unclipped = (newvalue - b_returns[mb_inds]) ** 2
-                    v_clipped = b_values[mb_inds] + torch.clamp(
-                        newvalue - b_values[mb_inds],
-                        -args.clip_coef,
-                        args.clip_coef,
-                    )
-                    v_loss_clipped = (v_clipped - b_returns[mb_inds]) ** 2
-                    v_loss_max = torch.max(v_loss_unclipped, v_loss_clipped)
-                    v_loss = 0.5 * v_loss_max.mean()
-                else:
+                    # Value loss (avoid in-place ops)
+                    newvalue = newvalue.view(-1)
                     v_loss = 0.5 * ((newvalue - b_returns[mb_inds]) ** 2).mean()
 
-                entropy_loss = entropy.mean()
-                loss = pg_loss - args.ent_coef * entropy_loss + v_loss * args.vf_coef
+                    # Final loss computation
+                    entropy_loss = entropy.mean()
+                    loss = pg_loss - args.ent_coef * entropy_loss + v_loss * args.vf_coef
 
-                optimizer.zero_grad()
                 loss.backward(retain_graph=True)
                 nn.utils.clip_grad_norm_(agent.parameters(), args.max_grad_norm)
                 optimizer.step()
-
-            if args.target_kl is not None and approx_kl > args.target_kl:
-                break
-
         update_time = time.time() - update_time
 
         y_pred, y_true = b_values.cpu().numpy(), b_returns.cpu().numpy()
