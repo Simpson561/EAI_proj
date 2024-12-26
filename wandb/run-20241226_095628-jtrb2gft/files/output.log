@@ -291,3 +291,7 @@ eval_episode_len_mean=100.0
 eval_reward_mean=0.24187690019607544
 eval_success_at_end_mean=0.0
 model saved to runs/TwoRobotPickCube-v1__ppo__3407__1735206972/ckpt_101.pt
+SPS: 10912
+Epoch: 102, global_step=20684800
+SPS: 10915
+Epoch: 103, global_step=20889600
