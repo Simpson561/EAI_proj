@@ -83,3 +83,99 @@ SPS: 10133
 Epoch: 28, global_step=5529600
 SPS: 10221
 Epoch: 29, global_step=5734400
+SPS: 10306
+Epoch: 30, global_step=5939200
+SPS: 10386
+Epoch: 31, global_step=6144000
+Evaluating
+Evaluated 800 steps resulting in 8 episodes
+eval_success_once_mean=0.0
+eval_return_mean=10.649282455444336
+eval_episode_len_mean=100.0
+eval_reward_mean=0.10649281740188599
+eval_success_at_end_mean=0.0
+model saved to runs/TwoRobotPickCube-v1__ppo-gru__3407__1735206906/ckpt_31.pt
+SPS: 10287
+Epoch: 32, global_step=6348800
+SPS: 10344
+Epoch: 33, global_step=6553600
+SPS: 10416
+Epoch: 34, global_step=6758400
+SPS: 10481
+Epoch: 35, global_step=6963200
+SPS: 10546
+Epoch: 36, global_step=7168000
+SPS: 10604
+Epoch: 37, global_step=7372800
+SPS: 10663
+Epoch: 38, global_step=7577600
+SPS: 10714
+Epoch: 39, global_step=7782400
+SPS: 10762
+Epoch: 40, global_step=7987200
+SPS: 10811
+Epoch: 41, global_step=8192000
+Evaluating
+Evaluated 800 steps resulting in 8 episodes
+eval_success_once_mean=0.0
+eval_return_mean=9.923630714416504
+eval_episode_len_mean=100.0
+eval_reward_mean=0.09923630952835083
+eval_success_at_end_mean=0.0
+model saved to runs/TwoRobotPickCube-v1__ppo-gru__3407__1735206906/ckpt_41.pt
+SPS: 10725
+Epoch: 42, global_step=8396800
+SPS: 10789
+Epoch: 43, global_step=8601600
+SPS: 10844
+Epoch: 44, global_step=8806400
+SPS: 10879
+Epoch: 45, global_step=9011200
+SPS: 10920
+Epoch: 46, global_step=9216000
+SPS: 10962
+Epoch: 47, global_step=9420800
+SPS: 11003
+Epoch: 48, global_step=9625600
+SPS: 11039
+Epoch: 49, global_step=9830400
+SPS: 11070
+Epoch: 50, global_step=10035200
+SPS: 11104
+Epoch: 51, global_step=10240000
+Evaluating
+Evaluated 800 steps resulting in 8 episodes
+eval_success_once_mean=0.0
+eval_return_mean=10.46530532836914
+eval_episode_len_mean=100.0
+eval_reward_mean=0.10465305298566818
+eval_success_at_end_mean=0.0
+model saved to runs/TwoRobotPickCube-v1__ppo-gru__3407__1735206906/ckpt_51.pt
+SPS: 11018
+Epoch: 52, global_step=10444800
+SPS: 11052
+Epoch: 53, global_step=10649600
+SPS: 11096
+Epoch: 54, global_step=10854400
+SPS: 11141
+Epoch: 55, global_step=11059200
+SPS: 11171
+Epoch: 56, global_step=11264000
+SPS: 11194
+Epoch: 57, global_step=11468800
+SPS: 11215
+Epoch: 58, global_step=11673600
+SPS: 11244
+Epoch: 59, global_step=11878400
+SPS: 11268
+Epoch: 60, global_step=12083200
+SPS: 11294
+Epoch: 61, global_step=12288000
+Evaluating
+Evaluated 800 steps resulting in 8 episodes
+eval_success_once_mean=0.0
+eval_return_mean=13.632749557495117
+eval_episode_len_mean=100.0
+eval_reward_mean=0.13632750511169434
+eval_success_at_end_mean=0.0
+model saved to runs/TwoRobotPickCube-v1__ppo-gru__3407__1735206906/ckpt_61.pt

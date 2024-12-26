@@ -85,3 +85,81 @@ SPS: 11749
 Epoch: 29, global_step=5734400
 SPS: 11733
 Epoch: 30, global_step=5939200
+SPS: 11717
+Epoch: 31, global_step=6144000
+Evaluating
+Evaluated 800 steps resulting in 8 episodes
+eval_success_once_mean=0.0
+eval_return_mean=16.528867721557617
+eval_episode_len_mean=100.0
+eval_reward_mean=0.16528868675231934
+eval_success_at_end_mean=0.0
+model saved to runs/TwoRobotPickCube-v1__ppo__3407__1735206972/ckpt_31.pt
+SPS: 11508
+Epoch: 32, global_step=6348800
+SPS: 11509
+Epoch: 33, global_step=6553600
+SPS: 11497
+Epoch: 34, global_step=6758400
+SPS: 11489
+Epoch: 35, global_step=6963200
+SPS: 11481
+Epoch: 36, global_step=7168000
+SPS: 11470
+Epoch: 37, global_step=7372800
+SPS: 11464
+Epoch: 38, global_step=7577600
+SPS: 11457
+Epoch: 39, global_step=7782400
+SPS: 11472
+Epoch: 40, global_step=7987200
+SPS: 11491
+Epoch: 41, global_step=8192000
+Evaluating
+Evaluated 800 steps resulting in 8 episodes
+eval_success_once_mean=0.0
+eval_return_mean=18.43488883972168
+eval_episode_len_mean=100.0
+eval_reward_mean=0.18434888124465942
+eval_success_at_end_mean=0.0
+model saved to runs/TwoRobotPickCube-v1__ppo__3407__1735206972/ckpt_41.pt
+SPS: 11297
+Epoch: 42, global_step=8396800
+SPS: 11273
+Epoch: 43, global_step=8601600
+SPS: 11266
+Epoch: 44, global_step=8806400
+SPS: 11264
+Epoch: 45, global_step=9011200
+SPS: 11255
+Epoch: 46, global_step=9216000
+SPS: 11252
+Epoch: 47, global_step=9420800
+SPS: 11251
+Epoch: 48, global_step=9625600
+SPS: 11282
+Epoch: 49, global_step=9830400
+SPS: 11278
+Epoch: 50, global_step=10035200
+SPS: 11273
+Epoch: 51, global_step=10240000
+Evaluating
+Evaluated 800 steps resulting in 8 episodes
+eval_success_once_mean=0.0
+eval_return_mean=18.811140060424805
+eval_episode_len_mean=100.0
+eval_reward_mean=0.18811139464378357
+eval_success_at_end_mean=0.0
+model saved to runs/TwoRobotPickCube-v1__ppo__3407__1735206972/ckpt_51.pt
+SPS: 11135
+Epoch: 52, global_step=10444800
+SPS: 11131
+Epoch: 53, global_step=10649600
+SPS: 11128
+Epoch: 54, global_step=10854400
+SPS: 11128
+Epoch: 55, global_step=11059200
+SPS: 11128
+Epoch: 56, global_step=11264000
+SPS: 11149
+Epoch: 57, global_step=11468800
