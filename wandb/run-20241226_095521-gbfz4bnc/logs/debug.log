@@ -20,3 +20,4 @@ config: {'exp_name': 'ppo-gru', 'seed': 3407, 'torch_deterministic': True, 'cuda
 2024-12-26 09:55:23,947 INFO    MainThread:2164443 [wandb_run.py:_redirect():2289] Wrapping output streams.
 2024-12-26 09:55:23,948 INFO    MainThread:2164443 [wandb_run.py:_redirect():2314] Redirects installed.
 2024-12-26 09:55:23,949 INFO    MainThread:2164443 [wandb_init.py:init():916] run started, returning control to user process
+2024-12-26 11:06:13,701 WARNING MsgRouterThr:2164443 [router.py:message_loop():75] message_loop has been closed

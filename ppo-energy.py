@@ -183,7 +183,7 @@ class Agent(nn.Module):
 
     def grad_wrt_actions(self, states, actions, create_graph=False):
         """Compute gradient of energy with respect to actions"""
-        actions.requires_grad = True
+        # actions.requires_grad = True
         energies = self.compute_energy(states, actions)
         grad = torch.autograd.grad(energies.sum(), actions, create_graph=create_graph)[0]
         return grad, energies
@@ -219,7 +219,8 @@ class Agent(nn.Module):
         schedule = PolynomialSchedule(step_size, step_size * 0.1, 2.0, n_steps)
         
         for step in range(n_steps):
-            actions = actions.detach().requires_grad_(True)  # Ensure gradients are tracked
+            # print(f"####Actions.require_grad={actions.requires_grad}")
+            # actions.requires_grad=True  # Ensure gradients are tracked
             curr_stepsize = schedule.get_rate(step)
             actions, _, _ = self.langevin_step(
                 states, 
@@ -228,48 +229,48 @@ class Agent(nn.Module):
                 grad_clip=grad_clip,
                 stepsize=curr_stepsize
             )
-        
-        return actions.detach()
+            
+        return actions
 
     def get_action_and_value(self, states, actions=None):
         """Get action, log probability, entropy and value"""
         if actions is None:
-            with torch.no_grad():
-                actions = self.langevin_dynamics(
-                    states, 
-                    n_steps=10,
-                    step_size=0.1,
-                    noise_scale=self.temperature.exp().item()
-                )
+            # with torch.no_grad():
+            actions = self.langevin_dynamics(
+                states, 
+                n_steps=10,
+                step_size=0.1,
+                noise_scale=self.temperature.exp().item()
+            )
         
         # Compute energy of the selected action
         energy = self.compute_energy(states, actions)
         
         # Estimate log probability using importance sampling
-        with torch.no_grad():
-            num_samples = 10
-            sampled_actions = torch.stack([
-                self.langevin_dynamics(
-                    states,
-                    n_steps=10,
-                    step_size=0.1,
-                    noise_scale=self.temperature.exp().item()
-                )
-                for _ in range(num_samples)
-            ])
-            
-            # Compute energies for all sampled actions
-            sampled_energies = self.compute_energy(
-                states.unsqueeze(0).expand(num_samples, -1, -1).reshape(-1, states.shape[-1]),
-                sampled_actions.reshape(-1, self.action_dim)
-            ).reshape(num_samples, -1)
-            
-            # Compute log probability
-            log_partition = torch.logsumexp(-sampled_energies / self.temperature.exp(), dim=0)
-            log_prob = -energy.squeeze() / self.temperature.exp() - log_partition
-            
-            # Compute approximate entropy
-            entropy = self.temperature.exp() * log_prob.mean()
+        # with torch.no_grad():
+        num_samples = 10
+        sampled_actions = torch.stack([
+            self.langevin_dynamics(
+                states,
+                n_steps=10,
+                step_size=0.1,
+                noise_scale=self.temperature.exp().item()
+            )
+            for _ in range(num_samples)
+        ])
+        
+        # Compute energies for all sampled actions
+        sampled_energies = self.compute_energy(
+            states.unsqueeze(0).expand(num_samples, -1, -1).reshape(-1, states.shape[-1]),
+            sampled_actions.reshape(-1, self.action_dim)
+        ).reshape(num_samples, -1)
+        
+        # Compute log probability
+        log_partition = torch.logsumexp(-sampled_energies / self.temperature.exp(), dim=0)
+        log_prob = -energy.squeeze() / self.temperature.exp() - log_partition
+        
+        # Compute approximate entropy
+        entropy = self.temperature.exp() * log_prob.mean()
             
         # Get value prediction
         value = self.critic(states)
@@ -278,20 +279,19 @@ class Agent(nn.Module):
 
     def get_action(self, states, deterministic=False):
         """Sample action based on current policy"""
-        with torch.no_grad():
-            if deterministic:
-                # For deterministic actions, use more steps and lower noise
-                actions = self.langevin_dynamics(
-                    states, 
-                    n_steps=20, 
-                    step_size=0.01, 
-                    noise_scale=0.01
-                )
-            else:
-                actions = self.langevin_dynamics(
-                    states,
-                    noise_scale=self.temperature.exp().item()
-                )
+        if deterministic:
+            # For deterministic actions, use more steps and lower noise
+            actions = self.langevin_dynamics(
+                states, 
+                n_steps=20, 
+                step_size=0.01, 
+                noise_scale=0.01
+            )
+        else:
+            actions = self.langevin_dynamics(
+                states,
+                noise_scale=self.temperature.exp().item()
+            )
         return actions
 
     def get_value(self, states):
@@ -419,13 +419,13 @@ if __name__ == "__main__":
             eval_metrics = defaultdict(list)
             num_episodes = 0
             for _ in range(args.num_eval_steps):
-                with torch.no_grad():
-                    eval_obs, eval_rew, eval_terminations, eval_truncations, eval_infos = eval_envs.step(agent.get_action(eval_obs, deterministic=True))
-                    if "final_info" in eval_infos:
-                        mask = eval_infos["_final_info"]
-                        num_episodes += mask.sum()
-                        for k, v in eval_infos["final_info"]["episode"].items():
-                            eval_metrics[k].append(v)
+                # with torch.no_grad():
+                eval_obs, eval_rew, eval_terminations, eval_truncations, eval_infos = eval_envs.step(agent.get_action(eval_obs, deterministic=True).detach())
+                if "final_info" in eval_infos:
+                    mask = eval_infos["_final_info"]
+                    num_episodes += mask.sum()
+                    for k, v in eval_infos["final_info"]["episode"].items():
+                        eval_metrics[k].append(v)
             print(f"Evaluated {args.num_eval_steps * args.num_eval_envs} steps resulting in {num_episodes} episodes")
             for k, v in eval_metrics.items():
                 mean = torch.stack(v).float().mean()
@@ -451,9 +451,9 @@ if __name__ == "__main__":
             dones[step] = next_done
             
             # ALGO LOGIC: action logic
-            with torch.no_grad():
-                action, logprob, _, value = agent.get_action_and_value(next_obs)
-                values[step] = value.flatten()
+            # with torch.no_grad():
+            action, logprob, _, value = agent.get_action_and_value(next_obs)
+            values[step] = value.flatten()
             actions[step] = action
             logprobs[step] = logprob
             

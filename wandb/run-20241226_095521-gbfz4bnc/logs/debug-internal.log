@@ -8,3 +8,11 @@
 {"time":"2024-12-26T09:55:22.654280761Z","level":"INFO","msg":"Starting system monitor"}
 {"time":"2024-12-26T09:55:23.248060796Z","level":"ERROR","msg":"error generating diff","error":"no diff found"}
 {"time":"2024-12-26T09:55:23.849986391Z","level":"ERROR","msg":"error generating diff","error":"no diff found"}
+{"time":"2024-12-26T11:06:13.700680526Z","level":"INFO","msg":"stream: closing","id":"gbfz4bnc"}
+{"time":"2024-12-26T11:06:13.700753807Z","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-26T11:06:13.701630637Z","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-26T11:06:15.221983047Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-26T11:06:15.985007265Z","level":"INFO","msg":"handler: closed","stream_id":"gbfz4bnc"}
+{"time":"2024-12-26T11:06:15.985075506Z","level":"INFO","msg":"writer: Close: closed","stream_id":"gbfz4bnc"}
+{"time":"2024-12-26T11:06:15.985091626Z","level":"INFO","msg":"sender: closed","stream_id":"gbfz4bnc"}
+{"time":"2024-12-26T11:06:15.985193277Z","level":"INFO","msg":"stream: closed","id":"gbfz4bnc"}
