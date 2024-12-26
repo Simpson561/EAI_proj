@@ -21,6 +21,21 @@ from mani_skill.utils.wrappers.flatten import FlattenActionSpaceWrapper
 from mani_skill.utils.wrappers.record import RecordEpisode
 from mani_skill.vector.wrappers.gymnasium import ManiSkillVectorEnv
 
+class PolynomialSchedule:
+  """Polynomial learning rate schedule for Langevin sampler."""
+
+  def __init__(self, init, final, power, num_steps):
+    self._init = init
+    self._final = final
+    self._power = power
+    self._num_steps = num_steps
+
+  def get_rate(self, index):
+    """Get learning rate for index."""
+    return ((self._init - self._final) *
+            ((1 - (float(index) / float(self._num_steps-1))) ** (self._power))
+            ) + self._final
+
 @dataclass
 class Args:
     exp_name: Optional[str] = None
@@ -149,9 +164,6 @@ class Agent(nn.Module):
         # Initialize temperature parameter
         self.temperature = nn.Parameter(torch.ones(1) * 1.0)
 
-    def get_value(self, x):
-        return self.critic(x)
-
     def normalize_actions(self, actions, device):
         """Normalize actions to [-1, 1] range"""
         action_space_range = (self.action_high - self.action_low).to(device)
@@ -164,41 +176,58 @@ class Agent(nn.Module):
         action_space_mid = (self.action_high + self.action_low).to(device) / 2.0
         return normalized_actions * action_space_range / 2.0 + action_space_mid
 
-    def compute_energy(self, states, actions, normalize=True):
+    def compute_energy(self, states, actions):
         """Compute energy value E(s,a)"""
-        if normalize:
-            actions = self.normalize_actions(actions, states.device)
         x = torch.cat([states, actions], dim=-1)
         return self.energy_net(x)
-    
-    def langevin_dynamics(self, states, n_steps=10, step_size=0.1, temp=1.0):
+
+    def grad_wrt_actions(self, states, actions, create_graph=False):
+        """Compute gradient of energy with respect to actions"""
+        actions.requires_grad = True
+        energies = self.compute_energy(states, actions)
+        grad = torch.autograd.grad(energies.sum(), actions, create_graph=create_graph)[0]
+        return grad, energies
+
+    def langevin_step(self, states, actions, noise_scale, grad_clip=None, stepsize=0.1):
+        """Single step of Langevin dynamics"""
+        grad, energy = self.grad_wrt_actions(states, actions)
+        
+        grad_norm = torch.norm(grad, dim=-1, keepdim=True)
+        if grad_clip:
+            grad = torch.clamp(grad, -grad_clip, grad_clip)
+            
+        # Langevin dynamics update
+        noise = torch.randn_like(actions) * noise_scale
+        action_drift = stepsize * (0.5 * grad + noise)
+        
+        actions = actions - action_drift
+        actions = torch.clamp(actions, 
+                            self.action_low.to(actions.device), 
+                            self.action_high.to(actions.device))
+        
+        return actions, energy, grad_norm
+
+    def langevin_dynamics(self, states, n_steps=10, step_size=0.1, noise_scale=0.1, grad_clip=1.0):
         """Langevin dynamics sampling for action selection"""
         device = states.device
         batch_size = states.shape[0]
         
-        # Start with random normalized actions
-        actions = torch.randn(batch_size, self.action_dim, device=device)
-        actions = self.denormalize_actions(torch.tanh(actions), device)  # Ensure initial actions are in valid range
+        # Initialize random actions
+        actions = torch.randn(batch_size, self.action_dim, device=device, requires_grad=True)
+        actions = self.denormalize_actions(torch.tanh(actions), device)
+        
+        schedule = PolynomialSchedule(step_size, step_size * 0.1, 2.0, n_steps)
         
         for step in range(n_steps):
-            actions.requires_grad_(True)
-            
-            # Compute energy and its gradient
-            energy = self.compute_energy(states, actions)
-            
-
-            grad = torch.autograd.grad(energy.sum(), actions)[0]
-            
-            # Langevin dynamics update
-            with torch.no_grad():
-                noise_scale = np.sqrt(2.0 * step_size * temp)
-                noise = torch.randn_like(actions) * noise_scale
-                actions = actions - step_size * grad + noise
-                
-                # Project actions back to valid range
-                actions = torch.clamp(actions, 
-                                    self.action_low.to(device), 
-                                    self.action_high.to(device))
+            actions = actions.detach().requires_grad_(True)  # Ensure gradients are tracked
+            curr_stepsize = schedule.get_rate(step)
+            actions, _, _ = self.langevin_step(
+                states, 
+                actions,
+                noise_scale=noise_scale,
+                grad_clip=grad_clip,
+                stepsize=curr_stepsize
+            )
         
         return actions.detach()
 
@@ -206,7 +235,12 @@ class Agent(nn.Module):
         """Get action, log probability, entropy and value"""
         if actions is None:
             with torch.no_grad():
-                actions = self.langevin_dynamics(states, temp=self.temperature.exp().item())
+                actions = self.langevin_dynamics(
+                    states, 
+                    n_steps=10,
+                    step_size=0.1,
+                    noise_scale=self.temperature.exp().item()
+                )
         
         # Compute energy of the selected action
         energy = self.compute_energy(states, actions)
@@ -215,7 +249,12 @@ class Agent(nn.Module):
         with torch.no_grad():
             num_samples = 10
             sampled_actions = torch.stack([
-                self.langevin_dynamics(states, temp=self.temperature.exp().item())
+                self.langevin_dynamics(
+                    states,
+                    n_steps=10,
+                    step_size=0.1,
+                    noise_scale=self.temperature.exp().item()
+                )
                 for _ in range(num_samples)
             ])
             
@@ -241,10 +280,18 @@ class Agent(nn.Module):
         """Sample action based on current policy"""
         with torch.no_grad():
             if deterministic:
-                # For deterministic actions, use more steps and lower temperature
-                actions = self.langevin_dynamics(states, n_steps=20, step_size=0.01, temp=0.1)
+                # For deterministic actions, use more steps and lower noise
+                actions = self.langevin_dynamics(
+                    states, 
+                    n_steps=20, 
+                    step_size=0.01, 
+                    noise_scale=0.01
+                )
             else:
-                actions = self.langevin_dynamics(states, temp=self.temperature.exp().item())
+                actions = self.langevin_dynamics(
+                    states,
+                    noise_scale=self.temperature.exp().item()
+                )
         return actions
 
     def get_value(self, states):
