@@ -20,6 +20,7 @@ from mani_skill.utils import gym_utils
 from mani_skill.utils.wrappers.flatten import FlattenActionSpaceWrapper
 from mani_skill.utils.wrappers.record import RecordEpisode
 from mani_skill.vector.wrappers.gymnasium import ManiSkillVectorEnv
+torch.autograd.set_detect_anomaly(True)  # Add this temporarily to debug
 
 class ExponentialSchedule:
   """Exponential learning rate schedule for Langevin sampler."""
@@ -196,30 +197,33 @@ class Agent(nn.Module):
 
     def grad_wrt_actions(self, states, actions, create_graph: bool=False):
         """Compute gradient of energy with respect to actions🤓"""
-        actions.requires_grad = True
+        # actions = actions.detach().clone()
+        # actions.requires_grad = True
+        actions.requires_grad_(True)
         energies = self.compute_energy(states, actions)
         grad = torch.autograd.grad(energies.sum(), actions, create_graph=create_graph)[0]
         return grad, energies
 
-    def langevin_step(self, states, actions, noise_scale, grad_clip=None, stepsize=0.1,l_lambda=1.0):
-        """Single step of Langevin dynamics🤓"""
-        grad, energy = self.grad_wrt_actions(states, actions)
+    def langevin_step(self, states, actions, noise_scale, grad_clip=None, stepsize=0.1, l_lambda=1.0):
+        """Single step of Langevin dynamics"""
+        grad, energy = self.grad_wrt_actions(states, actions, create_graph=True)
         
         grad_norm = torch.norm(grad, dim=-1, keepdim=True)
         if grad_clip:
             grad = torch.clamp(grad, -grad_clip, grad_clip)
             
-        # Langevin dynamics update
+        # Avoid in-place operations
         noise = torch.randn_like(actions) * noise_scale
         action_drift = stepsize * (0.5 * grad + noise)
-        action_drift=l_lambda*action_drift
+        action_drift = l_lambda * action_drift
         
-        actions = actions - action_drift
-        actions = torch.clamp(actions, 
+        # Create new tensor instead of modifying in-place
+        new_actions = actions - action_drift
+        new_actions = torch.clamp(new_actions, 
                             self.action_low.to(actions.device), 
                             self.action_high.to(actions.device))
         
-        return actions, energy, grad_norm
+        return new_actions, energy, grad_norm
 
     def langevin_mcmc_sa(self, states, n_steps=10, step_size=0.1, noise_scale=0.1, grad_clip=1.0):
         """Langevin dynamics sampling for action selection🤓"""
@@ -250,7 +254,7 @@ class Agent(nn.Module):
         """Get action, log probability, entropy and value"""
         if actions is None:
             # with torch.no_grad():
-            actions = self.langevin_dynamics(
+            actions = self.langevin_mcmc_sa(
                 states, 
                 n_steps=10,
                 step_size=0.1,
@@ -264,7 +268,7 @@ class Agent(nn.Module):
         # with torch.no_grad():
         num_samples = 10
         sampled_actions = torch.stack([
-            self.langevin_dynamics(
+            self.langevin_mcmc_sa(
                 states,
                 n_steps=10,
                 step_size=0.1,
@@ -295,14 +299,14 @@ class Agent(nn.Module):
         """Sample action based on current policy"""
         if deterministic:
             # For deterministic actions, use more steps and lower noise
-            actions = self.langevin_dynamics(
+            actions = self.langevin_mcmc_sa(
                 states, 
                 n_steps=20, 
                 step_size=0.01, 
                 noise_scale=0.01
             )
         else:
-            actions = self.langevin_dynamics(
+            actions = self.langevin_mcmc_sa(
                 states,
                 noise_scale=self.temperature.exp().item()
             )
@@ -588,7 +592,7 @@ if __name__ == "__main__":
                 loss = pg_loss - args.ent_coef * entropy_loss + v_loss * args.vf_coef
 
                 optimizer.zero_grad()
-                loss.backward()
+                loss.backward(retain_graph=True)
                 nn.utils.clip_grad_norm_(agent.parameters(), args.max_grad_norm)
                 optimizer.step()
 
