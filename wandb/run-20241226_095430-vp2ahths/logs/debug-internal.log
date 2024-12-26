@@ -1,0 +1,18 @@
+{"time":"2024-12-26T09:54:30.783584367Z","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-26T09:54:30.783605397Z","level":"INFO","msg":"created symlink","path":"/home/huangsiqiao/EAI_proj_gru_lstm/wandb/run-20241226_095430-vp2ahths/logs/debug-core.log"}
+{"time":"2024-12-26T09:54:30.993017592Z","level":"INFO","msg":"created new stream","id":"vp2ahths"}
+{"time":"2024-12-26T09:54:30.99307172Z","level":"INFO","msg":"stream: started","id":"vp2ahths"}
+{"time":"2024-12-26T09:54:30.99308316Z","level":"INFO","msg":"handler: started","stream_id":"vp2ahths"}
+{"time":"2024-12-26T09:54:30.993127868Z","level":"INFO","msg":"writer: Do: started","stream_id":"vp2ahths"}
+{"time":"2024-12-26T09:54:30.993135088Z","level":"INFO","msg":"sender: started","stream_id":"vp2ahths"}
+{"time":"2024-12-26T09:54:31.738099803Z","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-26T09:54:32.333170798Z","level":"ERROR","msg":"error generating diff","error":"no diff found"}
+{"time":"2024-12-26T09:54:32.938501368Z","level":"ERROR","msg":"error generating diff","error":"no diff found"}
+{"time":"2024-12-26T09:54:56.310825998Z","level":"INFO","msg":"stream: closing","id":"vp2ahths"}
+{"time":"2024-12-26T09:54:56.310906005Z","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-26T09:54:56.311765538Z","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-26T09:54:57.34019964Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-26T09:54:58.157006134Z","level":"INFO","msg":"handler: closed","stream_id":"vp2ahths"}
+{"time":"2024-12-26T09:54:58.157087472Z","level":"INFO","msg":"sender: closed","stream_id":"vp2ahths"}
+{"time":"2024-12-26T09:54:58.157085542Z","level":"INFO","msg":"writer: Close: closed","stream_id":"vp2ahths"}
+{"time":"2024-12-26T09:54:58.157345483Z","level":"INFO","msg":"stream: closed","id":"vp2ahths"}

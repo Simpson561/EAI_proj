@@ -1,0 +1,85 @@
+####
+args.num_iterations=244 args.num_envs=2048 args.num_eval_envs=8
+args.minibatch_size=6400 args.batch_size=204800 args.update_epochs=8
+####
+Epoch: 1, global_step=0
+Evaluating
+Evaluated 800 steps resulting in 8 episodes
+eval_success_once_mean=0.0
+eval_return_mean=1.3966212272644043
+eval_episode_len_mean=100.0
+eval_reward_mean=0.013966212049126625
+eval_success_at_end_mean=0.0
+model saved to runs/TwoRobotPickCube-v1__ppo-gru__3407__1735206906/ckpt_1.pt
+SPS: 9001
+Epoch: 2, global_step=204800
+SPS: 11570
+Epoch: 3, global_step=409600
+SPS: 12736
+Epoch: 4, global_step=614400
+SPS: 13321
+Epoch: 5, global_step=819200
+SPS: 13495
+Epoch: 6, global_step=1024000
+SPS: 12731
+Epoch: 7, global_step=1228800
+SPS: 12186
+Epoch: 8, global_step=1433600
+SPS: 11801
+Epoch: 9, global_step=1638400
+SPS: 11529
+Epoch: 10, global_step=1843200
+SPS: 11300
+Epoch: 11, global_step=2048000
+Evaluating
+Evaluated 800 steps resulting in 8 episodes
+eval_success_once_mean=0.0
+eval_return_mean=2.8352267742156982
+eval_episode_len_mean=100.0
+eval_reward_mean=0.028352268040180206
+eval_success_at_end_mean=0.0
+model saved to runs/TwoRobotPickCube-v1__ppo-gru__3407__1735206906/ckpt_11.pt
+SPS: 10581
+Epoch: 12, global_step=2252800
+SPS: 10458
+Epoch: 13, global_step=2457600
+SPS: 10475
+Epoch: 14, global_step=2662400
+SPS: 10397
+Epoch: 15, global_step=2867200
+SPS: 10341
+Epoch: 16, global_step=3072000
+SPS: 10302
+Epoch: 17, global_step=3276800
+SPS: 10253
+Epoch: 18, global_step=3481600
+SPS: 10210
+Epoch: 19, global_step=3686400
+SPS: 10155
+Epoch: 20, global_step=3891200
+SPS: 10126
+Epoch: 21, global_step=4096000
+Evaluating
+Evaluated 800 steps resulting in 8 episodes
+eval_success_once_mean=0.0
+eval_return_mean=9.783381462097168
+eval_episode_len_mean=100.0
+eval_reward_mean=0.09783381968736649
+eval_success_at_end_mean=0.0
+model saved to runs/TwoRobotPickCube-v1__ppo-gru__3407__1735206906/ckpt_21.pt
+SPS: 9887
+Epoch: 22, global_step=4300800
+SPS: 9861
+Epoch: 23, global_step=4505600
+SPS: 9851
+Epoch: 24, global_step=4710400
+SPS: 9845
+Epoch: 25, global_step=4915200
+SPS: 9943
+Epoch: 26, global_step=5120000
+SPS: 10038
+Epoch: 27, global_step=5324800
+SPS: 10133
+Epoch: 28, global_step=5529600
+SPS: 10221
+Epoch: 29, global_step=5734400

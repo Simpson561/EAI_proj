@@ -1,0 +1,10 @@
+{"time":"2024-12-26T09:55:21.610512779Z","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-26T09:55:21.610537089Z","level":"INFO","msg":"created symlink","path":"/home/huangsiqiao/EAI_proj_gru_lstm/wandb/run-20241226_095521-gbfz4bnc/logs/debug-core.log"}
+{"time":"2024-12-26T09:55:21.818082218Z","level":"INFO","msg":"created new stream","id":"gbfz4bnc"}
+{"time":"2024-12-26T09:55:21.818121477Z","level":"INFO","msg":"stream: started","id":"gbfz4bnc"}
+{"time":"2024-12-26T09:55:21.818168286Z","level":"INFO","msg":"sender: started","stream_id":"gbfz4bnc"}
+{"time":"2024-12-26T09:55:21.818168286Z","level":"INFO","msg":"writer: Do: started","stream_id":"gbfz4bnc"}
+{"time":"2024-12-26T09:55:21.818272723Z","level":"INFO","msg":"handler: started","stream_id":"gbfz4bnc"}
+{"time":"2024-12-26T09:55:22.654280761Z","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-26T09:55:23.248060796Z","level":"ERROR","msg":"error generating diff","error":"no diff found"}
+{"time":"2024-12-26T09:55:23.849986391Z","level":"ERROR","msg":"error generating diff","error":"no diff found"}

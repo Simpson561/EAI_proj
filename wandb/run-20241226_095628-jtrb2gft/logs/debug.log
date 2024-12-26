@@ -1,0 +1,22 @@
+2024-12-26 09:56:28,253 INFO    MainThread:2172506 [wandb_setup.py:_flush():68] Current SDK version is 0.19.1
+2024-12-26 09:56:28,253 INFO    MainThread:2172506 [wandb_setup.py:_flush():68] Configure stats pid to 2172506
+2024-12-26 09:56:28,253 INFO    MainThread:2172506 [wandb_setup.py:_flush():68] Loading settings from /home/huangsiqiao/.config/wandb/settings
+2024-12-26 09:56:28,253 INFO    MainThread:2172506 [wandb_setup.py:_flush():68] Loading settings from /home/huangsiqiao/EAI_proj_gru_lstm/wandb/settings
+2024-12-26 09:56:28,253 INFO    MainThread:2172506 [wandb_setup.py:_flush():68] Loading settings from environment variables
+2024-12-26 09:56:28,253 INFO    MainThread:2172506 [wandb_init.py:_log_setup():528] Logging user logs to /home/huangsiqiao/EAI_proj_gru_lstm/wandb/run-20241226_095628-jtrb2gft/logs/debug.log
+2024-12-26 09:56:28,253 INFO    MainThread:2172506 [wandb_init.py:_log_setup():529] Logging internal logs to /home/huangsiqiao/EAI_proj_gru_lstm/wandb/run-20241226_095628-jtrb2gft/logs/debug-internal.log
+2024-12-26 09:56:28,253 INFO    MainThread:2172506 [wandb_init.py:init():644] calling init triggers
+2024-12-26 09:56:28,253 INFO    MainThread:2172506 [wandb_init.py:init():650] wandb.init called with sweep_config: {}
+config: {'exp_name': 'ppo', 'seed': 3407, 'torch_deterministic': True, 'cuda': True, 'track': True, 'wandb_project_name': 'ManiSkill', 'wandb_entity': None, 'capture_video': True, 'save_model': True, 'evaluate': False, 'checkpoint': None, 'env_id': 'TwoRobotPickCube-v1', 'total_timesteps': 50000000, 'learning_rate': 0.0003, 'num_envs': 2048, 'num_eval_envs': 8, 'partial_reset': True, 'eval_partial_reset': False, 'num_steps': 100, 'num_eval_steps': 100, 'reconfiguration_freq': None, 'eval_reconfiguration_freq': 1, 'control_mode': 'pd_joint_delta_pos', 'anneal_lr': False, 'gamma': 0.8, 'gae_lambda': 0.9, 'num_minibatches': 32, 'update_epochs': 8, 'norm_adv': True, 'clip_coef': 0.2, 'clip_vloss': False, 'ent_coef': 0.0, 'vf_coef': 0.5, 'max_grad_norm': 0.5, 'target_kl': 0.1, 'reward_scale': 1.0, 'eval_freq': 10, 'save_train_video_freq': None, 'finite_horizon_gae': True, 'batch_size': 204800, 'minibatch_size': 6400, 'num_iterations': 244, 'env_cfg': {'obs_mode': 'state', 'render_mode': 'rgb_array', 'sim_backend': 'gpu', 'control_mode': 'pd_joint_delta_pos', 'num_envs': 2048, 'env_id': 'TwoRobotPickCube-v1', 'reward_mode': 'normalized_dense', 'env_horizon': 100, 'partial_reset': True}, 'eval_env_cfg': {'obs_mode': 'state', 'render_mode': 'rgb_array', 'sim_backend': 'gpu', 'control_mode': 'pd_joint_delta_pos', 'num_envs': 8, 'env_id': 'TwoRobotPickCube-v1', 'reward_mode': 'normalized_dense', 'env_horizon': 100, 'partial_reset': False}}
+2024-12-26 09:56:28,254 INFO    MainThread:2172506 [wandb_init.py:init():680] starting backend
+2024-12-26 09:56:28,254 INFO    MainThread:2172506 [wandb_init.py:init():684] sending inform_init request
+2024-12-26 09:56:28,256 INFO    MainThread:2172506 [backend.py:_multiprocessing_setup():104] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2024-12-26 09:56:28,256 INFO    MainThread:2172506 [wandb_init.py:init():697] backend started and connected
+2024-12-26 09:56:28,259 INFO    MainThread:2172506 [wandb_init.py:init():790] updated telemetry
+2024-12-26 09:56:28,266 INFO    MainThread:2172506 [wandb_init.py:init():822] communicating run to backend with 90.0 second timeout
+2024-12-26 09:56:29,147 INFO    MainThread:2172506 [wandb_init.py:init():874] starting run threads in backend
+2024-12-26 09:56:30,483 INFO    MainThread:2172506 [wandb_run.py:_console_start():2374] atexit reg
+2024-12-26 09:56:30,484 INFO    MainThread:2172506 [wandb_run.py:_redirect():2224] redirect: wrap_raw
+2024-12-26 09:56:30,484 INFO    MainThread:2172506 [wandb_run.py:_redirect():2289] Wrapping output streams.
+2024-12-26 09:56:30,484 INFO    MainThread:2172506 [wandb_run.py:_redirect():2314] Redirects installed.
+2024-12-26 09:56:30,486 INFO    MainThread:2172506 [wandb_init.py:init():916] run started, returning control to user process
