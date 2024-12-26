@@ -159,67 +159,69 @@ class Agent(nn.Module):
         device = states.device
         batch_size = states.shape[0]
         
-        # Initialize random actions and ensure they require gradients
-        actions = (torch.rand(batch_size, self.action_dim, device=device) * 2 - 1)  # [-1, 1]
+        # Initialize random actions
+        actions = torch.rand(batch_size, self.action_dim, device=device) * 2 - 1  # [-1, 1]
         actions = actions * (self.action_high - self.action_low).to(device) / 2 + (self.action_high + self.action_low).to(device) / 2
-        actions = actions.detach().requires_grad_(True)
         
         for _ in range(n_steps):
-            # Compute energy and its gradient
+            actions.requires_grad_(True)
             energy = self.compute_energy(states, actions)
-            grad = torch.autograd.grad(energy.sum(), actions, create_graph=True)[0]
+            grad = torch.autograd.grad(energy.sum(), actions)[0]
             
             # Update actions using Langevin dynamics
             noise = torch.randn_like(actions) * np.sqrt(2 * step_size)
-            with torch.no_grad():
-                actions_new = actions - step_size * grad + noise
-                # Project actions back to valid range
-                actions_new = torch.clamp(actions_new, self.action_low.to(device), self.action_high.to(device))
+            actions = actions - step_size * grad + noise
             
-            # Prepare for next iteration
-            actions = actions_new.detach().requires_grad_(True)
+            # Project actions back to valid range
+            actions = torch.clamp(actions, self.action_low.to(device), self.action_high.to(device))
+            actions = actions.detach()
             
-        return actions.detach()
+        return actions
 
     def get_action_and_value(self, states, actions=None, deterministic=False):
         """Get action, log probability, entropy and value"""
         if actions is None:
             # Sample actions using Langevin dynamics
-            with torch.no_grad():
-                actions = self.langevin_dynamics(states)
+            actions = self.langevin_dynamics(states)
         
-        # Compute energy
+        # Compute energy and derive log probability
         energy = self.compute_energy(states, actions)
         
         # Compute log probability using importance sampling
         num_samples = 10
-        with torch.no_grad():
-            sampled_actions = torch.stack([self.langevin_dynamics(states) for _ in range(num_samples)])
-            sampled_energies = self.compute_energy(
-                states.unsqueeze(0).expand(num_samples, -1, -1).reshape(-1, states.shape[-1]),
-                sampled_actions.reshape(-1, self.action_dim)
-            ).reshape(num_samples, -1)
-            
-            # Compute log probability using energy difference and partition function
-            log_partition = torch.logsumexp(-sampled_energies, dim=0)
-            log_prob = -energy.squeeze() - log_partition
-            
-            # Approximate entropy using sampled energies
-            entropy = -log_prob.mean()
-            
-            # Get value prediction
-            value = self.critic(states)
+        sampled_actions = torch.stack([self.langevin_dynamics(states) for _ in range(num_samples)])
+        sampled_energies = self.compute_energy(
+            states.unsqueeze(0).expand(num_samples, -1, -1).reshape(-1, states.shape[-1]),
+            sampled_actions.reshape(-1, self.action_dim)
+        ).reshape(num_samples, -1)
+        
+        # Compute log probability using energy difference and partition function
+        log_partition = torch.logsumexp(-sampled_energies, dim=0)
+        log_prob = -energy.squeeze() - log_partition
+        
+        # Approximate entropy using sampled energies
+        entropy = -log_prob.mean()
+        
+        # Get value prediction
+        value = self.critic(states)
         
         return actions, log_prob, entropy, value
 
     def get_action(self, states, deterministic=False):
         """Sample action based on current policy"""
         with torch.no_grad():
+            actions = self.langevin_dynamics(states)
             if deterministic:
-                # For deterministic actions, use more Langevin steps and lower temperature
-                actions = self.langevin_dynamics(states, n_steps=20, step_size=0.05)
-            else:
-                actions = self.langevin_dynamics(states)
+                # For deterministic actions, we can either:
+                # 1. Use more Langevin steps
+                # 2. Take the best action from multiple samples
+                sampled_actions = torch.stack([self.langevin_dynamics(states) for _ in range(5)])
+                energies = self.compute_energy(
+                    states.unsqueeze(0).expand(5, -1, -1).reshape(-1, states.shape[-1]),
+                    sampled_actions.reshape(-1, self.action_dim)
+                ).reshape(5, -1)
+                best_idx = energies.argmin(dim=0)
+                actions = sampled_actions[best_idx, torch.arange(states.shape[0])]
         return actions
 
     def get_value(self, states):
