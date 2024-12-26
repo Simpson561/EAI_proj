@@ -1,0 +1,18 @@
+####
+args.num_iterations=244 args.num_envs=2048 args.num_eval_envs=8
+args.minibatch_size=6400 args.batch_size=204800 args.update_epochs=8
+####
+Epoch: 1, global_step=0
+Evaluating
+Traceback (most recent call last):
+  File "/home/huangsiqiao/EAI_proj_gru_lstm/ppo-energy.py", line 295, in <module>
+    eval_obs, eval_rew, eval_terminations, eval_truncations, eval_infos = eval_envs.step(agent.get_action(eval_obs, deterministic=True))
+  File "/home/huangsiqiao/EAI_proj_gru_lstm/ppo-energy.py", line 161, in get_action
+    raise NotImplementedError("Deterministic action sampling is not well-defined for energy-based models.")
+NotImplementedError: Deterministic action sampling is not well-defined for energy-based models.
+Traceback (most recent call last):
+  File "/home/huangsiqiao/EAI_proj_gru_lstm/ppo-energy.py", line 295, in <module>
+    eval_obs, eval_rew, eval_terminations, eval_truncations, eval_infos = eval_envs.step(agent.get_action(eval_obs, deterministic=True))
+  File "/home/huangsiqiao/EAI_proj_gru_lstm/ppo-energy.py", line 161, in get_action
+    raise NotImplementedError("Deterministic action sampling is not well-defined for energy-based models.")
+NotImplementedError: Deterministic action sampling is not well-defined for energy-based models.
