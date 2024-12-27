@@ -1,0 +1,16 @@
+{"time":"2024-12-26T10:18:10.698289633Z","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-26T10:18:10.698316153Z","level":"INFO","msg":"created symlink","path":"/home/huangsiqiao/EAI_proj_gru_lstm/wandb/run-20241226_101810-h433lxrv/logs/debug-core.log"}
+{"time":"2024-12-26T10:18:10.809149194Z","level":"INFO","msg":"created new stream","id":"h433lxrv"}
+{"time":"2024-12-26T10:18:10.809216394Z","level":"INFO","msg":"stream: started","id":"h433lxrv"}
+{"time":"2024-12-26T10:18:10.809298594Z","level":"INFO","msg":"handler: started","stream_id":"h433lxrv"}
+{"time":"2024-12-26T10:18:10.809299325Z","level":"INFO","msg":"writer: Do: started","stream_id":"h433lxrv"}
+{"time":"2024-12-26T10:18:10.809313705Z","level":"INFO","msg":"sender: started","stream_id":"h433lxrv"}
+{"time":"2024-12-26T10:18:11.641846848Z","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-26T10:18:15.225003597Z","level":"INFO","msg":"stream: closing","id":"h433lxrv"}
+{"time":"2024-12-26T10:18:15.225045126Z","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-26T10:18:15.226000126Z","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-26T10:18:16.152262218Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-26T10:18:16.777061427Z","level":"INFO","msg":"handler: closed","stream_id":"h433lxrv"}
+{"time":"2024-12-26T10:18:16.777144877Z","level":"INFO","msg":"sender: closed","stream_id":"h433lxrv"}
+{"time":"2024-12-26T10:18:16.777127877Z","level":"INFO","msg":"writer: Close: closed","stream_id":"h433lxrv"}
+{"time":"2024-12-26T10:18:16.777318007Z","level":"INFO","msg":"stream: closed","id":"h433lxrv"}

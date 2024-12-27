@@ -1,0 +1,20 @@
+{"time":"2024-12-26T09:56:28.259526794Z","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-26T09:56:28.259552463Z","level":"INFO","msg":"created symlink","path":"/home/huangsiqiao/EAI_proj_gru_lstm/wandb/run-20241226_095628-jtrb2gft/logs/debug-core.log"}
+{"time":"2024-12-26T09:56:28.468539974Z","level":"INFO","msg":"created new stream","id":"jtrb2gft"}
+{"time":"2024-12-26T09:56:28.468608092Z","level":"INFO","msg":"stream: started","id":"jtrb2gft"}
+{"time":"2024-12-26T09:56:28.468631501Z","level":"INFO","msg":"writer: Do: started","stream_id":"jtrb2gft"}
+{"time":"2024-12-26T09:56:28.468647011Z","level":"INFO","msg":"sender: started","stream_id":"jtrb2gft"}
+{"time":"2024-12-26T09:56:28.468646081Z","level":"INFO","msg":"handler: started","stream_id":"jtrb2gft"}
+{"time":"2024-12-26T09:56:29.152181767Z","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-26T09:56:29.778207418Z","level":"ERROR","msg":"error generating diff","error":"no diff found"}
+{"time":"2024-12-26T09:56:30.382066434Z","level":"ERROR","msg":"error generating diff","error":"no diff found"}
+{"time":"2024-12-26T10:23:55.329450877Z","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/files/huang-sq23-tsinghua-university/ManiSkill/jtrb2gft/file_stream\": dial tcp 35.186.228.49:443: connect: connection timed out"}
+{"time":"2024-12-26T10:33:53.34551358Z","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/files/huang-sq23-tsinghua-university/ManiSkill/jtrb2gft/file_stream\": dial tcp 35.186.228.49:443: connect: connection timed out"}
+{"time":"2024-12-26T11:16:44.354113919Z","level":"INFO","msg":"stream: closing","id":"jtrb2gft"}
+{"time":"2024-12-26T11:16:44.354166183Z","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-26T11:16:44.35518687Z","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-26T11:16:45.881051902Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-26T11:16:46.585568521Z","level":"INFO","msg":"handler: closed","stream_id":"jtrb2gft"}
+{"time":"2024-12-26T11:16:46.585623914Z","level":"INFO","msg":"writer: Close: closed","stream_id":"jtrb2gft"}
+{"time":"2024-12-26T11:16:46.585654381Z","level":"INFO","msg":"sender: closed","stream_id":"jtrb2gft"}
+{"time":"2024-12-26T11:16:46.585732031Z","level":"INFO","msg":"stream: closed","id":"jtrb2gft"}

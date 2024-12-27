@@ -1,0 +1,51 @@
+####
+args.num_iterations=244 args.num_envs=2048 args.num_eval_envs=8
+args.minibatch_size=6400 args.batch_size=204800 args.update_epochs=8
+####
+Epoch: 1, global_step=0
+Evaluating
+Evaluated 800 steps resulting in 8 episodes
+eval_success_once_mean=0.0
+eval_return_mean=1.3966212272644043
+eval_episode_len_mean=100.0
+eval_reward_mean=0.013966212049126625
+eval_success_at_end_mean=0.0
+model saved to runs/TwoRobotPickCube-v1__ppo-gru__3407__1735206854/ckpt_1.pt
+SPS: 9520
+Epoch: 2, global_step=204800
+Traceback (most recent call last):
+  File "/home/huangsiqiao/EAI_proj_gru_lstm/ppo-gru.py", line 343, in <module>
+    next_obs, reward, terminations, truncations, infos = envs.step(clip_action(action))
+  File "/home/huangsiqiao/EAI_proj_gru_lstm/mani_skill/vector/wrappers/gymnasium.py", line 111, in step
+    obs, rew, terminations, truncations, infos = self._env.step(actions)
+  File "/home/huangsiqiao/miniconda3/envs/maniskill/lib/python3.10/site-packages/gymnasium/core.py", line 591, in step
+    return self.env.step(self.action(action))
+  File "/home/huangsiqiao/EAI_proj_gru_lstm/mani_skill/utils/registration.py", line 161, in step
+    observation, reward, terminated, truncated, info = self.env.step(action)
+  File "/home/huangsiqiao/miniconda3/envs/maniskill/lib/python3.10/site-packages/gymnasium/wrappers/order_enforcing.py", line 56, in step
+    return self.env.step(action)
+  File "/home/huangsiqiao/EAI_proj_gru_lstm/mani_skill/envs/sapien_env.py", line 956, in step
+    action = self._step_action(action)
+  File "/home/huangsiqiao/EAI_proj_gru_lstm/mani_skill/envs/sapien_env.py", line 1027, in _step_action
+    self.scene.step()
+  File "/home/huangsiqiao/EAI_proj_gru_lstm/mani_skill/envs/scene.py", line 370, in step
+    self.px.step()
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/home/huangsiqiao/EAI_proj_gru_lstm/ppo-gru.py", line 343, in <module>
+    next_obs, reward, terminations, truncations, infos = envs.step(clip_action(action))
+  File "/home/huangsiqiao/EAI_proj_gru_lstm/mani_skill/vector/wrappers/gymnasium.py", line 111, in step
+    obs, rew, terminations, truncations, infos = self._env.step(actions)
+  File "/home/huangsiqiao/miniconda3/envs/maniskill/lib/python3.10/site-packages/gymnasium/core.py", line 591, in step
+    return self.env.step(self.action(action))
+  File "/home/huangsiqiao/EAI_proj_gru_lstm/mani_skill/utils/registration.py", line 161, in step
+    observation, reward, terminated, truncated, info = self.env.step(action)
+  File "/home/huangsiqiao/miniconda3/envs/maniskill/lib/python3.10/site-packages/gymnasium/wrappers/order_enforcing.py", line 56, in step
+    return self.env.step(action)
+  File "/home/huangsiqiao/EAI_proj_gru_lstm/mani_skill/envs/sapien_env.py", line 956, in step
+    action = self._step_action(action)
+  File "/home/huangsiqiao/EAI_proj_gru_lstm/mani_skill/envs/sapien_env.py", line 1027, in _step_action
+    self.scene.step()
+  File "/home/huangsiqiao/EAI_proj_gru_lstm/mani_skill/envs/scene.py", line 370, in step
+    self.px.step()
+KeyboardInterrupt

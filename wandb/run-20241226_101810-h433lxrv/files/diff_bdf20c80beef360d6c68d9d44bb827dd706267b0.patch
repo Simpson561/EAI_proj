@@ -1,0 +1,132 @@
+diff --git a/runs/TwoRobotPickCube-v1__ppo-gru__3407__1735206906/events.out.tfevents.1735206923.6b378d0d1dea.2164443.0 b/runs/TwoRobotPickCube-v1__ppo-gru__3407__1735206906/events.out.tfevents.1735206923.6b378d0d1dea.2164443.0
+index cab9486..c0fc0f6 100644
+Binary files a/runs/TwoRobotPickCube-v1__ppo-gru__3407__1735206906/events.out.tfevents.1735206923.6b378d0d1dea.2164443.0 and b/runs/TwoRobotPickCube-v1__ppo-gru__3407__1735206906/events.out.tfevents.1735206923.6b378d0d1dea.2164443.0 differ
+diff --git a/runs/TwoRobotPickCube-v1__ppo__3407__1735206972/events.out.tfevents.1735206990.6b378d0d1dea.2172506.0 b/runs/TwoRobotPickCube-v1__ppo__3407__1735206972/events.out.tfevents.1735206990.6b378d0d1dea.2172506.0
+index d07f84a..cbae860 100644
+Binary files a/runs/TwoRobotPickCube-v1__ppo__3407__1735206972/events.out.tfevents.1735206990.6b378d0d1dea.2172506.0 and b/runs/TwoRobotPickCube-v1__ppo__3407__1735206972/events.out.tfevents.1735206990.6b378d0d1dea.2172506.0 differ
+diff --git a/wandb/debug-internal.log b/wandb/debug-internal.log
+index a7b2c19..2bb97eb 120000
+--- a/wandb/debug-internal.log
++++ b/wandb/debug-internal.log
+@@ -1 +1 @@
+-run-20241226_095628-jtrb2gft/logs/debug-internal.log
+\ No newline at end of file
++run-20241226_101810-h433lxrv/logs/debug-internal.log
+\ No newline at end of file
+diff --git a/wandb/debug.log b/wandb/debug.log
+index 2ba1cb4..a7328b2 120000
+--- a/wandb/debug.log
++++ b/wandb/debug.log
+@@ -1 +1 @@
+-run-20241226_095628-jtrb2gft/logs/debug.log
+\ No newline at end of file
++run-20241226_101810-h433lxrv/logs/debug.log
+\ No newline at end of file
+diff --git a/wandb/latest-run b/wandb/latest-run
+index d0a89d9..5c15a3c 120000
+--- a/wandb/latest-run
++++ b/wandb/latest-run
+@@ -1 +1 @@
+-run-20241226_095628-jtrb2gft
+\ No newline at end of file
++run-20241226_101810-h433lxrv
+\ No newline at end of file
+diff --git a/wandb/run-20241226_095521-gbfz4bnc/files/output.log b/wandb/run-20241226_095521-gbfz4bnc/files/output.log
+index 695ecc0..0c0c965 100644
+--- a/wandb/run-20241226_095521-gbfz4bnc/files/output.log
++++ b/wandb/run-20241226_095521-gbfz4bnc/files/output.log
+@@ -179,3 +179,43 @@ eval_episode_len_mean=100.0
+ eval_reward_mean=0.13632750511169434
+ eval_success_at_end_mean=0.0
+ model saved to runs/TwoRobotPickCube-v1__ppo-gru__3407__1735206906/ckpt_61.pt
++SPS: 11214
++Epoch: 62, global_step=12492800
++SPS: 11237
++Epoch: 63, global_step=12697600
++SPS: 11259
++Epoch: 64, global_step=12902400
++SPS: 11279
++Epoch: 65, global_step=13107200
++SPS: 11323
++Epoch: 66, global_step=13312000
++SPS: 11343
++Epoch: 67, global_step=13516800
++SPS: 11358
++Epoch: 68, global_step=13721600
++SPS: 11377
++Epoch: 69, global_step=13926400
++SPS: 11394
++Epoch: 70, global_step=14131200
++SPS: 11412
++Epoch: 71, global_step=14336000
++Evaluating
++Evaluated 800 steps resulting in 8 episodes
++eval_success_once_mean=0.0
++eval_return_mean=14.754963874816895
++eval_episode_len_mean=100.0
++eval_reward_mean=0.14754962921142578
++eval_success_at_end_mean=0.0
++model saved to runs/TwoRobotPickCube-v1__ppo-gru__3407__1735206906/ckpt_71.pt
++SPS: 11334
++Epoch: 72, global_step=14540800
++SPS: 11349
++Epoch: 73, global_step=14745600
++SPS: 11369
++Epoch: 74, global_step=14950400
++SPS: 11387
++Epoch: 75, global_step=15155200
++SPS: 11404
++Epoch: 76, global_step=15360000
++SPS: 11429
++Epoch: 77, global_step=15564800
+diff --git a/wandb/run-20241226_095521-gbfz4bnc/run-gbfz4bnc.wandb b/wandb/run-20241226_095521-gbfz4bnc/run-gbfz4bnc.wandb
+index 39adc25..3eaa992 100644
+Binary files a/wandb/run-20241226_095521-gbfz4bnc/run-gbfz4bnc.wandb and b/wandb/run-20241226_095521-gbfz4bnc/run-gbfz4bnc.wandb differ
+diff --git a/wandb/run-20241226_095628-jtrb2gft/files/output.log b/wandb/run-20241226_095628-jtrb2gft/files/output.log
+index 7236227..f73072c 100644
+--- a/wandb/run-20241226_095628-jtrb2gft/files/output.log
++++ b/wandb/run-20241226_095628-jtrb2gft/files/output.log
+@@ -163,3 +163,40 @@ SPS: 11128
+ Epoch: 56, global_step=11264000
+ SPS: 11149
+ Epoch: 57, global_step=11468800
++SPS: 11163
++Epoch: 58, global_step=11673600
++SPS: 11167
++Epoch: 59, global_step=11878400
++SPS: 11172
++Epoch: 60, global_step=12083200
++SPS: 11175
++Epoch: 61, global_step=12288000
++Evaluating
++Evaluated 800 steps resulting in 8 episodes
++eval_success_once_mean=0.0
++eval_return_mean=19.645347595214844
++eval_episode_len_mean=100.0
++eval_reward_mean=0.19645348191261292
++eval_success_at_end_mean=0.0
++model saved to runs/TwoRobotPickCube-v1__ppo__3407__1735206972/ckpt_61.pt
++SPS: 11069
++Epoch: 62, global_step=12492800
++SPS: 11066
++Epoch: 63, global_step=12697600
++SPS: 11066
++Epoch: 64, global_step=12902400
++SPS: 11070
++Epoch: 65, global_step=13107200
++SPS: 11099
++Epoch: 66, global_step=13312000
++SPS: 11101
++Epoch: 67, global_step=13516800
++SPS: 11101
++Epoch: 68, global_step=13721600
++SPS: 11098
++Epoch: 69, global_step=13926400
++SPS: 11097
++Epoch: 70, global_step=14131200
++SPS: 11095
++Epoch: 71, global_step=14336000
++Evaluating
+diff --git a/wandb/run-20241226_095628-jtrb2gft/run-jtrb2gft.wandb b/wandb/run-20241226_095628-jtrb2gft/run-jtrb2gft.wandb
+index b1947aa..137ee6f 100644
+Binary files a/wandb/run-20241226_095628-jtrb2gft/run-jtrb2gft.wandb and b/wandb/run-20241226_095628-jtrb2gft/run-jtrb2gft.wandb differ
